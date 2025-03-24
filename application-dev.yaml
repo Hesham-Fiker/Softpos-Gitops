@@ -3,6 +3,11 @@ kind: Application
 metadata:
   name: myapp-argo-application
   namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: heshamfiker/myapp:latest
+    argocd-image-updater.argoproj.io/update-strategy: latest
+    argocd-image-updater.argoproj.io/image-credentials-secret: argocd/docker-hub-credentials
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/repo-creds
 spec:
   project: default
 
@@ -17,7 +22,6 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
-
     automated:
       selfHeal: true
       prune: true

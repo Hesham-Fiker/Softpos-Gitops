@@ -4,6 +4,8 @@ metadata:
   name: merchant-admin
   labels:
     app: merchant-admin
+  # annotations:
+  #   argocd-image-updater.argoproj.io/image-list: heshamfiker/merchant:latest
 spec:
   replicas: 1
   selector:
@@ -22,6 +24,8 @@ spec:
           runAsGroup: 1
           allowPrivilegeEscalation: true
           privileged: true
+      # imagePullSecrets:
+      #   - name: docker-hub-credentials  # Use this if the Docker Hub repo is private
 ---
 apiVersion: v1
 kind: Service
