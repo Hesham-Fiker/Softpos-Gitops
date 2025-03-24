@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: super-admin
+  labels:
+    app: super-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: super-admin
+  template:
+    metadata:
+      labels:
+        app: super-admin
+    spec:
+      containers:
+      - name: super-admin
+        image: super-admin:latest
+        securityContext:
+          runAsUser: 1  # Ensure NGINX runs as a non-root user
+          runAsGroup: 1
+          allowPrivilegeEscalation: true
+          privileged: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: super-admin-service
+  labels:
+    app: super-admin
+spec:
+  selector:
+    app: super-admin
+  ports:
+  - protocol: TCP
+    port: 3002
+    targetPort: 80
+  type: ClusterIP # Use ClusterIP or NodePort depending on cluster capabilities
+

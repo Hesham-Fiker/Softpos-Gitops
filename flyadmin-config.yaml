@@ -1,0 +1,113 @@
+apiVersion: v1
+data:
+  V1_1__super_admin_user_insert.sql: |
+    DECLARE
+    sequence_exists EXCEPTION;
+        table_exists EXCEPTION;
+        PRAGMA EXCEPTION_INIT(sequence_exists, -02289); -- ORA-02289: sequence does not exist
+        PRAGMA EXCEPTION_INIT(table_exists, -00955);    -- ORA-00955: name is already used by an existing object
+    BEGIN
+        -- Create sequence if it doesn't exist
+    BEGIN
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE adm_merchant_users_s
+        INCREMENT BY 1
+        START WITH 1
+        MINVALUE 1
+        MAXVALUE 9223372036854775807 CACHE 2';
+    EXCEPTION
+            WHEN sequence_exists THEN
+                NULL; -- Sequence already exists, do nothing
+    END;
+
+        -- Create table if it doesn't exist
+    BEGIN
+    EXECUTE IMMEDIATE 'CREATE TABLE adm_merchant_users (
+                                                           id                        NUMBER(19, 0) DEFAULT adm_merchant_users_s.NEXTVAL PRIMARY KEY,
+                                                           user_id                   VARCHAR2(36) NOT NULL,
+                                                           merchant_id               VARCHAR2(36),
+                                                           identity_provider_user_id VARCHAR2(36),
+                                                           outlet_id                 VARCHAR2(36),
+                                                           email                     VARCHAR2(255) UNIQUE,
+                                                           user_name                 VARCHAR2(255) UNIQUE,
+                                                           first_name                VARCHAR2(255),
+                                                           last_name                 VARCHAR2(255),
+                                                           user_role                 VARCHAR2(255),
+                                                           status                    VARCHAR2(255),
+                                                           phone_number              VARCHAR2(255) UNIQUE,
+                                                           is_default_password       CHAR(1) DEFAULT ''N'' CHECK (is_default_password IN (''Y'', ''N''))
+                       )';
+    EXCEPTION
+            WHEN table_exists THEN
+                NULL; -- Table already exists, do nothing
+    END;
+    END;
+    /
+
+    -- Insert data into adm_merchant_users
+    INSERT INTO adm_merchant_users (user_id, merchant_id, identity_provider_user_id, outlet_id, email, user_name,
+                                    first_name, last_name, user_role, status, phone_number, is_default_password)
+    VALUES ('427c248d-bd50-4e4e-aec8-54b62c439869',
+            '427c248d-bd50-4e4e-aec8-54b62c439869',
+            '427c248d-bd50-4e4e-aec8-54b62c439869',
+            '427c248d-bd50-4e4e-aec8-54b62c439869',
+            'admin@gmail.com',
+            'admin',
+            'admin',
+            'admin',
+            'Super-Admin',
+            'Active',
+            '+201158478677',
+            'Y');
+
+    COMMIT;
+  V1_2__insert_acquirer.sql: |
+    DECLARE
+    table_exists EXCEPTION;
+        PRAGMA
+    EXCEPTION_INIT(table_exists, -00955); -- ORA-00955: name is already used by an existing object
+    BEGIN
+        -- Create table if it doesn't exist
+    BEGIN
+    EXECUTE IMMEDIATE 'CREATE TABLE tms_acquirer
+        (acquirer_id NUMBER(19, 0) NOT NULL, created_by VARCHAR2(255), created_date TIMESTAMP, last_modified_by VARCHAR2(255), last_modified_date TIMESTAMP, bank_description VARCHAR2(255), bank_fiid VARCHAR2(255), country_id VARCHAR2(255), enable_dcc_flag CHAR(1) CHECK (enable_dcc_flag IN (''Y'', ''N'')), CONSTRAINT tms_acquirer_pkey PRIMARY KEY (acquirer_id), CONSTRAINT uk_mea72n6jgc3rryew0hugvoqc4 UNIQUE (bank_fiid))';
+    EXCEPTION
+            WHEN table_exists THEN
+                NULL; -- Table already exists, do nothing
+    END;
+    END;
+    /
+
+    -- Insert data into tms_acquirer
+    INSERT INTO tms_acquirer (acquirer_id, bank_description, bank_fiid, country_id, enable_dcc_flag)
+    VALUES (1, 'AL RAJHI BANK', '06022021AUB', '355', 'N');
+
+    COMMIT;
+  V1_3__insert_roles_script.sql: |
+    -- Create table if it doesn't exist
+    BEGIN
+        EXECUTE IMMEDIATE 'CREATE TABLE adm_roles (
+                                                      role_id NUMBER(10) NOT NULL PRIMARY KEY,
+                                                      name VARCHAR2(20) NOT NULL
+                           )';
+    EXCEPTION
+        WHEN OTHERS THEN
+            -- Do nothing if the table already exists or raise an error if it's another issue
+            IF SQLCODE != -955 THEN
+                RAISE;
+            END IF;
+    END;
+    /
+
+    -- Insert data into adm_roles
+    INSERT INTO adm_roles (role_id, name) VALUES (1, 'ROLE_USER');
+    INSERT INTO adm_roles (role_id, name) VALUES (2, 'ROLE_ADMIN');
+    INSERT INTO adm_roles (role_id, name) VALUES (3, 'ROLE_SUPER_ADMIN');
+
+    COMMIT;
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2024-11-07T22:44:13Z"
+  name: flyadmin-config
+    # namespace: softpos
+  resourceVersion: "25771"
+  uid: e60429d8-7922-416f-86fa-a8e82347562d

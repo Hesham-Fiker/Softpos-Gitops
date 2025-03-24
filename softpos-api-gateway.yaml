@@ -1,0 +1,172 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: softpos-api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: softpos-api-gateway
+  template:
+    metadata:
+      labels:
+        app: softpos-api-gateway
+    spec:
+      containers:
+        - name: softpos-api-gateway
+          image: softpos-api-gateway:2.2.5-SNAPSHOT
+          resources:
+            requests:
+              memory: "256Mi"  # Minimum memory guaranteed
+              cpu: "250m"       # Minimum CPU guaranteed (250 millicores = 0.25 vCPU)
+            limits:
+              memory: "512Mi"  # Maximum memory allowed
+              cpu: "250m"  
+          env:
+            # Use values from ConfigMap
+            - name: JAEGER_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap  
+                  key: JAEGER_HOST
+            - name: SECURITY_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: SECURITY_SERVICE_HOST
+            - name: SOFTPOS_CORE_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: SOFTPOS_CORE_SERVICE_HOST
+            - name: MERCHANT_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: MERCHANT_SERVICE_HOST
+            - name: TRANSACTION_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: TRANSACTION_SERVICE_HOST
+            - name: NOTIFICATION_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: NOTIFICATION_SERVICE_HOST
+            - name: RECEIPT_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: RECEIPT_SERVICE_HOST
+            - name: ATTESTATION_MONITORING_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: ATTESTATION_MONITORING_SERVICE_HOST
+            - name: MADA_TMS2_MOCK_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: MADA_TMS2_MOCK_SERVICE_HOST
+            - name: LOGGING_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: LOGGING_SERVICE_HOST
+            - name: KEY_MANAGEMENT_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: KEY_MANAGEMENT_SERVICE_HOST
+            - name: SYSTEM_DATE_TIME_FORMAT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: SYSTEM_DATE_TIME_FORMAT
+            - name: IDENTITY_PROVIDER_ISSUER_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDENTITY_PROVIDER_ISSUER_URI
+            - name: IDENTITY_PROVIDER_REDIRECT_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDENTITY_PROVIDER_REDIRECT_URI
+            - name: IDENTITY_PROVIDER_JWT_JWK_SET_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDENTITY_PROVIDER_JWT_JWK_SET_URI
+            - name: STATIC_API_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: STATIC_API_KEY
+            - name: IDENTITY_PROVIDER_INTROSPECT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDENTITY_PROVIDER_INTROSPECT_URL
+            - name: IDENTITY_PROVIDER_CREDENTIALS_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDENTITY_PROVIDER_CLIENT_SECRET
+            - name: IDENTITY_PROVIDER_CLIENT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDENTITY_PROVIDER_CLIENT
+            - name: CACHE_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: CACHE_DB_NAME
+            - name: CACHE_DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: CACHE_DB_HOST
+            - name: CACHE_DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: CACHE_DB_PORT
+            - name: RABBITMQ_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: RABBITMQ_PORT
+            - name: RABBITMQ_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: RABBITMQ_HOST
+
+            # Use static values
+            - name: SECRET_FILE_PATH
+              value: "/run/secrets/api-key/api-key"
+          
+          volumeMounts:
+            - name: api-key
+              mountPath: /run/secrets/api-key
+              readOnly: true
+      volumes:
+        - name: api-key
+          configMap:
+            name: api-key
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: softpos-api-gateway
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8082
+      targetPort: 8082
+  selector:
+    app: softpos-api-gateway

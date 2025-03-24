@@ -1,0 +1,31 @@
+apiVersion: v1
+data:
+  V2_2__Data.sql: |
+    DECLARE
+    table_exists EXCEPTION;
+        PRAGMA
+    EXCEPTION_INIT(table_exists, -00955); -- ORA-00955: name is already used by an existing object
+    BEGIN
+        -- Create table if it doesn't exist
+    BEGIN
+    EXECUTE IMMEDIATE 'CREATE TABLE am_app_version
+        (id NUMBER(10) NOT NULL, active CHAR(1) DEFAULT ''N'' CHECK (active IN (''Y'', ''N'')), check_sum VARCHAR2(255), version_no VARCHAR2(20), CONSTRAINT am_app_version_pk PRIMARY KEY (id))';
+    EXCEPTION
+            WHEN table_exists THEN
+                NULL; -- Table already exists, do nothing
+    END;
+    END;
+    /
+
+    -- Insert data into am_app_version
+    INSERT INTO am_app_version (id, active, check_sum, version_no)
+    VALUES (1, 'Y', '4195262d8cbd8f40cd44042b90f8d983b91d3fa03a4454791e0475b0cd10889a', '1.0.1');
+
+    COMMIT;
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2024-11-07T23:17:56Z"
+  name: flywayattestation-config
+    #namespace: softpos
+  resourceVersion: "27262"
+  uid: 6b6e78d3-1871-4665-8448-0f9ed70fe665
