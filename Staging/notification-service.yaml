@@ -1,0 +1,219 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+        - name: notification-service
+          image: quay.apps.ocphubho.neoleap.com.sa/ocpuat_softpos-sbs-sit/notification-service:2.2.5-SNAPSHOT
+          ports:
+            - containerPort: 9068
+          env:
+            - name: spring.jpa.properties.hibernate.default_schema
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: NOTIFICATION_DB_USERNAME
+            - name: CACHE_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: CACHE_DB_NAME
+            - name: CACHE_DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: CACHE_DB_HOST
+            - name: CACHE_DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: CACHE_DB_PORT
+            - name: spring.datasource.url
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: NOTIFICATION_DB_URL
+            - name: spring.datasource.username
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: NOTIFICATION_DB_USERNAME
+            - name: spring.datasource.password
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: NOTIFICATION_DB_PASSWORD
+            - name: spring.datasource.driver-class-name
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_DRIVER_CLASS
+            - name: spring.jpa.show-sql
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: HIBERNATE_SHOW_SQL
+            - name: spring.jpa.properties.hibernate.format_sql
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: HIBERNATE_FORMAT_SQL
+            - name: spring.jpa.properties.hibernate.dialect
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: HIBERNATE_DIALECT
+            - name: MERCHANT_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: MERCHANT_SERVICE_HOST
+            - name: RABBITMQ_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: RABBITMQ_HOST
+            - name: RABBITMQ_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: RABBITMQ_PORT
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: RABBITMQ_DEFAULT_USER
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: RABBITMQ_DEFAULT_PASS
+# #new update
+            - name: DB_TYPE
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_TYPE
+            - name: DB_CONNECTION_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_CONNECTION_TIMEOUT
+            - name: DB_MINIMUM_IDLE
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_MINIMUM_IDLE
+            - name: DB_MAXIMUM_POOL_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_MAXIMUM_POOL_SIZE
+            - name: DB_IDLE_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_IDLE_TIMEOUT
+            - name: DB_MAX_LIFETIME
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_MAX_LIFETIME
+            - name: DB_AUTO_COMMIT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_AUTO_COMMIT
+            - name: DB_VALIDATION_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_VALIDATION_TIMEOUT
+            - name: DB_LEAK_DETECTION_THRESHOLD
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_LEAK_DETECTION_THRESHOLD
+            - name: DB_CACHE_PREP_STMTS
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_CACHE_PREP_STMTS
+                    #- name: DB_JDBC_READ_TIMEOUT
+                    #valueFrom:
+                    #configMapKeyRef:
+                    #name: my-configmap
+                    #key: DB_JDBC_READ_TIMEOUT
+            - name: DB_PREP_STMT_CACHE_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_PREP_STMT_CACHE_SIZE
+            - name: DB_PREP_STMT_CACHE_SQL_LIMIT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_PREP_STMT_CACHE_SQL_LIMIT
+            - name: DB_USE_LOCAL_SESSION_STATE
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_USE_LOCAL_SESSION_STATE
+            - name: DB_REWRITE_BATCHED_STATEMENTS
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_REWRITE_BATCHED_STATEMENTS
+            - name: DB_CACHE_RESULT_SET_METADATA
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_CACHE_RESULT_SET_METADATA
+            - name: DB_CACHE_SERVER_CONFIGURATION
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_CACHE_SERVER_CONFIGURATION
+            - name: DB_ELIDE_SET_AUTO_COMMITS
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_ELIDE_SET_AUTO_COMMITS
+            - name: DB_MAINTAIN_TIME_STATS
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_MAINTAIN_TIME_STATS
+          volumeMounts:
+          - name: my-log-pvc
+            mountPath: "/log" 
+      volumes:
+      - name: my-log-pvc
+        persistentVolumeClaim:
+          claimName: my-log-pvc
+
+    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+spec:
+  selector:
+    app: notification-service
+  ports:
+    - protocol: TCP
+      port: 9068
+      targetPort: 9068
+  type: ClusterIP
+

@@ -1,0 +1,250 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: key-management-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: key-management-service
+  template:
+    metadata:
+      labels:
+        app: key-management-service
+    spec:
+      containers:
+        - name: key-management-service
+          image: quay.apps.ocphubho.neoleap.com.sa/ocpuat_softpos-sbs-sit/key-management-service:2.2.5-SNAPSHOT
+          ports:
+            - containerPort: 9070
+          env:
+            - name: SERVICE_PORT
+              value: "9070"
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: ACTIVE_PROFILES
+            - name: VAULT_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: VAULT_TOKEN
+            - name: VAULT_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: VAULT_ADDRESS
+            - name: spring.datasource.url
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: KM_DB_URL
+            - name: spring.datasource.username
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: KM_DB_USERNAME
+            - name: spring.datasource.password
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: KM_DB_PASSWORD
+            - name: spring.datasource.driver-class-name
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_DRIVER_CLASS
+            - name: spring.jpa.show-sql
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: HIBERNATE_SHOW_SQL
+            - name: spring.jpa.properties.hibernate.format_sql
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: HIBERNATE_FORMAT_SQL
+            - name: spring.jpa.hibernate.ddl-auto
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: HIBERNATE_DDL_AUTO
+            - name: spring.jpa.properties.hibernate.dialect
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: HIBERNATE_DIALECT
+            - name: spring.jpa.properties.hibernate.default_schema
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: KM_DB_USERNAME     
+            - name: ALIAS_EXPIRY_MONTHS
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: ALIAS_EXPIRY_MONTHS 
+            - name: ALIAS_EXPIRY_MINS
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: ALIAS_EXPIRY_MINS 
+            - name: SECURITY_PROFILE
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: SECURITY_PROFILE          
+            - name: spring.cloud.vault.token
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: VAULT_TOKEN
+            - name: spring.cloud.vault.uri
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: VAULT_ADDRESS
+            - name: CACHE_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: CACHE_DB_NAME
+            - name: CACHE_DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: CACHE_DB_HOST
+            - name: CACHE_DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: CACHE_DB_PORT
+            - name: MERCHANT_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: MERCHANT_SERVICE_HOST
+            - name: MOBILE_PUBLIC_KEY_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: MOBILE_PUBLIC_KEY_PATH
+            - name: SERVER_PRIVATE_KEY_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: SERVER_PRIVATE_KEY_PATH
+# #new update
+            - name: DB_TYPE
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_TYPE
+            - name: DB_CONNECTION_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_CONNECTION_TIMEOUT
+            - name: DB_MINIMUM_IDLE
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_MINIMUM_IDLE
+            - name: DB_MAXIMUM_POOL_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_MAXIMUM_POOL_SIZE
+            - name: DB_IDLE_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_IDLE_TIMEOUT
+            - name: DB_MAX_LIFETIME
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_MAX_LIFETIME
+            - name: DB_AUTO_COMMIT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_AUTO_COMMIT
+            - name: DB_VALIDATION_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_VALIDATION_TIMEOUT
+            - name: DB_LEAK_DETECTION_THRESHOLD
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_LEAK_DETECTION_THRESHOLD
+            - name: DB_CACHE_PREP_STMTS
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_CACHE_PREP_STMTS
+                    #- name: DB_JDBC_READ_TIMEOUT
+                    #valueFrom:
+                    #configMapKeyRef:
+                    #name: my-configmap
+                    #key: DB_JDBC_READ_TIMEOUT
+            - name: DB_PREP_STMT_CACHE_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_PREP_STMT_CACHE_SIZE
+            - name: DB_PREP_STMT_CACHE_SQL_LIMIT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_PREP_STMT_CACHE_SQL_LIMIT
+            - name: DB_USE_LOCAL_SESSION_STATE
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_USE_LOCAL_SESSION_STATE
+            - name: DB_REWRITE_BATCHED_STATEMENTS
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_REWRITE_BATCHED_STATEMENTS
+            - name: DB_CACHE_RESULT_SET_METADATA
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_CACHE_RESULT_SET_METADATA
+            - name: DB_CACHE_SERVER_CONFIGURATION
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_CACHE_SERVER_CONFIGURATION
+            - name: DB_ELIDE_SET_AUTO_COMMITS
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_ELIDE_SET_AUTO_COMMITS
+            - name: DB_MAINTAIN_TIME_STATS
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: DB_MAINTAIN_TIME_STATS
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: key-management-service
+spec:
+  selector:
+    app: key-management-service
+  ports:
+    - protocol: TCP
+      port: 9070
+      targetPort: 9070
+  type: ClusterIP
+
+
