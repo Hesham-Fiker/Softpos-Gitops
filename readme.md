@@ -18,7 +18,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 
 ### Apply application.yaml
 ```
-kubectl apply -f application.yaml
+kubectl apply -f application-dev.yaml
 ```
 
 
