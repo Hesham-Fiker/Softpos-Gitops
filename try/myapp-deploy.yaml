@@ -6,7 +6,7 @@ metadata:
     argocd-image-updater.argoproj.io/image-list: hesh3am/myapp
     argocd-image-updater.argoproj.io/hesh3am-myapp.update-strategy: latest
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: myapp
