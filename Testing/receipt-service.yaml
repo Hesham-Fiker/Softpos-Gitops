@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: receipt-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: receipt-service
+  template:
+    metadata:
+      labels:
+        app: receipt-service
+    spec:
+      containers:
+      - name: receipt-service
+        image: default-route-openshift-image-registry.apps-crc.testing/default/receipt-service:2.2.5-SNAPSHOT
+        securityContext:
+        runAsUser: 1000  # Ensure NGINX runs as a non-root user
+        runAsGroup: 1000
+        #allowPrivilegeEscalation: true
+        ports:
+        - containerPort: 9069
+        env:
+          - name: TRANSACTION_SERVICE_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: my-configmap
+                key: TRANSACTION_SERVICE_HOST
+          - name: KEY_MANAGEMENT_SERVICE_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: my-configmap
+                key: KEY_MANAGEMENT_SERVICE_HOST
+          - name: MERCHANT_SERVICE_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: my-configmap
+                key: MERCHANT_SERVICE_HOST
+          - name: SECURITY_SERVICE_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: my-configmap
+                key: SECURITY_SERVICE_HOST
+          - name: SOFTPOS_CORE_SERVICE_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: my-configmap
+                key: SOFTPOS_CORE_SERVICE_HOST
+          - name: ATTESTATION_MONITORING_SERVICE_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: my-configmap
+                key: ATTESTATION_MONITORING_SERVICE_HOST
+
+      volumeMounts:
+          - name: my-log-pvc
+            mountPath: "/log"
+      volumes:
+      - name: my-log-pvc
+        persistentVolumeClaim:
+          claimName: my-log-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: receipt-service
+spec:
+  selector:
+    app: receipt-service
+  ports:
+    - protocol: TCP
+      port: 9069
+      targetPort: 9069
+  type: ClusterIP
+

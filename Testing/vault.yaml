@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault
+  template:
+    metadata:
+      labels:
+        app: vault
+    spec:
+      containers:
+      - name: vault
+        image: hashicorp/vault:latest
+        ports:
+        - containerPort: 8200
+        env:
+        - name: VAULT_ADDR
+          value: "http://vault:8200"
+        - name: VAULT_DEV_ROOT_TOKEN_ID
+          value: "myroot"
+        - name: VAULT_TOKEN
+          value: "myroot"
+        - name: ATTESTATION_MONITORING_SERVICE_HOST
+          value: "http://attestation-monitoring-service:9099/"
+        securityContext:
+          capabilities:
+            add: ["CAP_SETFCAP"]
+        volumeMounts:
+        - name: vault-volume
+          mountPath: /data
+        args:
+        - "server"
+        - "-dev"
+        - "-dev-root-token-id=myroot"
+      volumes:
+        - name: vault-volume
+          persistentVolumeClaim:
+            claimName: vault-storage  # Referencing the PVC here
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vault
+spec:
+  selector:
+    app: vault
+  ports:
+    - protocol: TCP
+      port: 8200
+      targetPort: 8200
+  type: ClusterIP
+

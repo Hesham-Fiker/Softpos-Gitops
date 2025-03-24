@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flyway-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flyway-admin
+  template:
+    metadata:
+      labels:
+        app: flyway-admin
+    spec:
+      containers:
+        - name: flyway-admin
+          image: flyway/flyway:latest
+          command:
+            - /flyway/flyway
+            - -url=jdbc:oracle:thin:@//141.147.133.191:1521/FREE
+            - -schemas=MERCHANTS
+            - -user=MERCHANTS
+            - -password=merchants
+            - -connectRetries=80
+            - -baselineOnMigrate=true
+            - -createSchemas=false
+            - migrate
+          volumeMounts:
+            - name: flyway-sql
+              mountPath: /flyway/sql
+              readOnly: true
+      volumes:
+        - name: flyway-sql
+          configMap:
+            name: flyadmin-config  # This should match your ConfigMap name
