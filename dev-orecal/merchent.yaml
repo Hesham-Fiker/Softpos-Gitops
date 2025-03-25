@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: merchant-admin
+  labels:
+    app: merchant-admin
+  # annotations:
+  #   argocd-image-updater.argoproj.io/image-list: heshamfiker/merchant:latest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: merchant-admin
+  template:
+    metadata:
+      labels:
+        app: merchant-admin
+    spec:
+      containers:
+      - name: merchant-admin
+        image: merchant:latest
+        securityContext:
+          runAsUser: 1  # Ensure NGINX runs as a non-root user
+          runAsGroup: 1
+          allowPrivilegeEscalation: true
+          privileged: true
+      # imagePullSecrets:
+      #   - name: docker-hub-credentials  # Use this if the Docker Hub repo is private
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: merchant-admin-service
+  labels:
+    app: merchant-admin
+spec:
+  selector:
+    app: merchant-admin
+  ports:
+  - protocol: TCP
+    port: 3003
+    targetPort: 80
+  type: ClusterIP # Use ClusterIP or NodePort depending on cluster capabilities

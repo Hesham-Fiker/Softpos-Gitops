@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mada-tms2-mock-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mada-tms2-mock-service
+  template:
+    metadata:
+      labels:
+        app: mada-tms2-mock-service
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: mada-tms2-mock-service
+        image: quay.apps.ocphubho.neoleap.com.sa/ocpuat_softpos-sbs-sit/mada-tms2-mock-service:2.2.5-SNAPSHOT
+        ports:
+        - containerPort: 9098
+        env:
+          - name: TMS_PUBLIC_KEY_PATH
+            valueFrom:
+              configMapKeyRef:
+                name: my-configmap
+                key: TMS_PUBLIC_KEY_PATH
+          - name: TAG
+            valueFrom:
+              configMapKeyRef:
+                name: my-configmap
+                key: TAG
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mada-tms2-mock-service
+spec:
+  selector:
+    app: mada-tms2-mock-service
+  ports:
+    - protocol: TCP
+      port: 9098
+      targetPort: 9098
+  type: ClusterIP

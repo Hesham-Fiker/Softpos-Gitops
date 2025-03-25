@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp-argo-application
+  namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: hesh3am/myapp:latest
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/repo-creds
+    #argocd-image-updater.argoproj.io/image-credentials-secret: argocd/docker-hub-credentials
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/Hesham-Fiker/Softpos-Gitops.git
+    targetRevision: HEAD
+    path: try
+  destination: 
+    server: https://kubernetes.default.svc
+    namespace: default
+
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true          # Ensures the namespace is created if it doesn't exist
+    - ApplyOutOfSyncOnly=true       # Prevents unnecessary re-applications when already in sync
+    - Replace=true                  # Forces resource replacement on update, ensuring rollout
+    - PrunePropagationPolicy=foreground  # Ensures child resources are deleted before parents
+    - PruneLast=true                # Ensures pruning happens at the end to avoid dependency issues
+    automated:
+      selfHeal: true
+      prune: true

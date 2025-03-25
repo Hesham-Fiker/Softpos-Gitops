@@ -1,0 +1,148 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jboss-keycloak-server
+  labels:
+    app: jboss-keycloak-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jboss-keycloak-server
+  template:
+    metadata:
+      labels:
+        app: jboss-keycloak-server
+    spec:
+      containers:
+        - name: jboss-keycloak-server
+          image: keycloak/keycloak:22.0.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KEYCLOAK_ADMIN
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDAM_ADMIN
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDAM_ADMIN_PASSWORD
+            - name: KEYCLOAK_DATABASE_VENDOR
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDAM_DATABASE_VENDOR
+            - name: KEYCLOAK_DATABASE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDAM_DATABASE_HOST
+            - name: KEYCLOAK_DATABASE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDAM_DATABASE_PORT
+            - name: KEYCLOAK_DATABASE_SCHEMA
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDAM_DATABASE_SCHEMA
+            - name: KEYCLOAK_DATABASE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDAM_DATABASE_NAME
+            - name: KEYCLOAK_DATABASE_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDAM_DATABASE_USER
+            - name: KEYCLOAK_DATABASE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDAM_DATABASE_PASSWORD
+      
+            # - name: KEYCLOAK_ADMIN
+            #   value: "admin"
+            # - name: KEYCLOAK_ADMIN_PASSWORD
+            #   value: "admin"
+            # - name: KEYCLOAK_DATABASE_VENDOR
+            #   value: "ORACLE"
+            # - name: KEYCLOAK_DATABASE_HOST
+            #   value: "141.147.133.191"
+            # - name: KEYCLOAK_DATABASE_PORT
+            #   value: "1521"
+            # - name: KEYCLOAK_DATABASE_SCHEMA
+            #   value: "identity"
+            # - name: KEYCLOAK_DATABASE_NAME
+            #   value: "identity"
+            # - name: KEYCLOAK_DATABASE_USER
+            #   value: "identity"
+            # - name: KEYCLOAK_DATABASE_PASSWORD
+            #   value: "identity"
+            - name: ACCOUNT_SID
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDENTITY_PROVIDER_ACCOUNT_SID
+            - name: AUTH_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDENTITY_PROVIDER_AUTH_TOKEN
+            - name: TRIAL_NUMBER
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: TRIAL_NUMBER
+            - name: KEYCLOAK_SMS_AUTHENTICATOR
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDENTITY_PROVIDER_SMS_AUTHENTICATOR
+            - name: KEYCLOAK_SMS_AUTHENTICATOR_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: IDENTITY_PROVIDER_SMS_AUTHENTICATOR_ID
+            - name: SYSTEM_DATE_TIME_FORMAT
+              valueFrom:
+                configMapKeyRef:
+                  name: my-configmap
+                  key: SYSTEM_DATE_TIME_FORMAT
+            - name: KC_HTTP_RELATIVE_PATH
+              value: "/auth"
+            - name: KC_HEALTH_ENABLED
+              value: "true"
+          volumeMounts:
+            - name: keycloak-imports
+              mountPath: /opt/keycloak/data/import
+          #command:
+          #  - "/opt/keycloak/bin/kc.sh"
+          args:
+            - "start-dev"
+            - "--import-realm"
+      volumes:
+        - name: keycloak-imports
+          configMap:
+            name: keycloak-imports
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jboss-keycloak-server
+  labels:
+    app: jboss-keycloak-server
+spec:
+  type: NodePort
+  ports:
+    - port: 8081
+      targetPort: 8080
+        #protocol: TCP
+  selector:
+    app: jboss-keycloak-server
+

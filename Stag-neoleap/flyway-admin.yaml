@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flyway-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flyway-admin
+  template:
+    metadata:
+      labels:
+        app: flyway-admin
+    spec:
+      containers:
+        - name: flyway-admin
+          image: quay.apps.ocphubho.neoleap.com.sa/ocpuat_softpos-sbs-sit/flyway/flyway:latest
+          command:
+            - /flyway/flyway
+            - -url=jdbc:oracle:thin:@//192.168.100.52:1521/softpossbs_db_sit
+            - -schemas=MERCHANTS
+            - -user=MERCHANTS
+            - -password=N_dbnc762022#cjf
+            - -connectRetries=80
+            - -baselineOnMigrate=true
+            - -createSchemas=false
+            - migrate
+          volumeMounts:
+            - name: flyway-sql
+              mountPath: /flyway/sql
+              readOnly: true
+      volumes:
+        - name: flyway-sql
+          configMap:
+            name: flyadmin-config  # This should match your ConfigMap name
