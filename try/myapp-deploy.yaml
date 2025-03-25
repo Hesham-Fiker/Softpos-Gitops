@@ -4,7 +4,7 @@ metadata:
   name: myapp-deployment
   annotations:
     argocd-image-updater.argoproj.io/image-list: hesh3am/myapp
-    argocd-image-updater.argoproj.io/image-list: hesh3am/myapp:latest
+    #argocd-image-updater.argoproj.io/image-list: hesh3am/myapp:latest
     #argocd-image-updater.argoproj.io/hesh3am-myapp.update-strategy: latest
     # argocd-image-updater.argoproj.io/hesh3am-myapp.update-strategy: semver
     # argocd-image-updater.argoproj.io/hesh3am-myapp.allow-tags: regexp:^1\.\d+$
@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: myapp-container
-        image: hesh3am/myapp:latest  # This will be updated automatically
+        image: hesh3am/myapp  # This will be updated automatically
         ports:
         - containerPort: 3000
 
