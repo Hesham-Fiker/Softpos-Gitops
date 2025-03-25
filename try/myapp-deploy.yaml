@@ -4,6 +4,7 @@ metadata:
   name: myapp-deployment
   annotations:
     argocd-image-updater.argoproj.io/image-list: hesh3am/myapp
+    argocd-image-updater.argoproj.io/update-strategy: latest
     #argocd-image-updater.argoproj.io/image-list: hesh3am/myapp:latest
     #argocd-image-updater.argoproj.io/hesh3am-myapp.update-strategy: latest
     # argocd-image-updater.argoproj.io/hesh3am-myapp.update-strategy: semver
