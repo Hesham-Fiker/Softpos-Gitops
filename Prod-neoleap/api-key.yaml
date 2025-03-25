@@ -6,7 +6,6 @@ metadata:
   creationTimestamp: "2024-11-07T22:05:50Z"
   name: api-key
     #namespace: softpos
-  resourceVersion: "24068"
   uid: c71f9545-df5b-460a-8f58-958aa1667634
 
 

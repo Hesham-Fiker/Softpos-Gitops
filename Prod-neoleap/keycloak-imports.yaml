@@ -2476,5 +2476,4 @@ metadata:
   creationTimestamp: "2024-11-05T22:47:53Z"
   name: keycloak-imports
     #namespace: softpos
-  resourceVersion: "870"
   uid: 2068325b-c4b6-479e-8ed4-1c911548b9af

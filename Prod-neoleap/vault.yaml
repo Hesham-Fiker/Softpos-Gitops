@@ -12,7 +12,7 @@ spec:
       labels:
         app: vault
     spec:
-      serviceAccountName: softpos-anyuid
+      # serviceAccountName: softpos-anyuid
       containers:
       - name: vault
         image: quay.apps.ocphubho.neoleap.com.sa/ocpuat_softpos-sbs-sit/hashicorp/vault:latest
