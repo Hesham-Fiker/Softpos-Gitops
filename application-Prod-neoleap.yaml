@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/Hesham-Fiker/Softpos-Gitops.git
     targetRevision: HEAD
-    path: Staging
+    path: Prod-neoleap
   destination: 
     server: https://kubernetes.default.svc
     namespace: default

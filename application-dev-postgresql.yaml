@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp-argo-application
+  namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: heshamfiker/myapp:latest
+    argocd-image-updater.argoproj.io/update-strategy: latest
+    argocd-image-updater.argoproj.io/image-credentials-secret: argocd/docker-hub-credentials
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/repo-creds
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/Hesham-Fiker/Softpos-Gitops.git
+    targetRevision: HEAD
+    path: dev-postgresql
+  destination: 
+    server: https://kubernetes.default.svc
+    namespace: default
+
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      selfHeal: true
+      prune: true
