@@ -1,0 +1,14 @@
+apiVersion: v1
+data:
+  V2_2__Data.sql: "create table IF NOT EXISTS public.am_app_version\r\n(\r\n    id\r\n
+    \   int4\r\n    not\r\n    null,\r\n    active CHAR(1) DEFAULT 'N' CHECK (active
+    IN ('Y', 'N')),\r\n    check_sum\r\n    varchar\r\n(\r\n    255\r\n) , version_no
+    varchar\r\n(\r\n    20\r\n) , primary key\r\n(\r\n    id\r\n) );\r\n\r\n\r\n\r\nINSERT
+    INTO public.am_app_version (id, active, check_sum, version_no)\r\nVALUES (1, 'Y',
+    '4195262d8cbd8f40cd44042b90f8d983b91d3fa03a4454791e0475b0cd10889a', '1.0.1');\r\n"
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2025-03-26T01:16:59Z"
+  name: flywayattestation-config
+  # namespace: default
+  uid: 38f4cc75-bf64-433e-b19b-cd36aa4815cf

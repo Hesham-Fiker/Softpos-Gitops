@@ -2,7 +2,8 @@ apiVersion: v1
 data:
   ACTIONS_CRON_EXPRESSION: '0 */5 * * * *'
   SECURITY_PROFILE: hsm
-  ACTIVE_PROFILES: hsm,MadaISO20022,Keycloak
+  ACTIVE_PROFILES: static-hsm,MadaISO20022,Keycloak
+  ADMIN_SMS_SKIP_TOGGLE: "true"
   ALIAS_EXPIRY_MINS: "2"
   ALIAS_EXPIRY_MONTHS: "3"
   IDAM_ADMIN: admin

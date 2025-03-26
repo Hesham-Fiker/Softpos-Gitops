@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  drop_all_databases.sql: "dropdb -f -p 2354 -h localhost -U postgres  transactions-log\r\ndropdb
+    -f -p 7000 -h localhost -U admin  admin\r\ndropdb -f -p 6000 -h localhost -U postgres
+    \  key-management\r\ndropdb -f -p 9000 -h localhost -U postgres  postgres\r\ndropdb
+    -f -p 9080 -h localhost -U attestation  attestation-management"
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2025-03-26T01:18:39Z"
+  name: dropdb-config
+  # namespace: default
+  uid: eb1b386d-ab28-441b-b194-ae9e0410d044
