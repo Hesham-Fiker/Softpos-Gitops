@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myapp-deployment
+  name: myapp
+  namespace: default
+  labels:
+    app: myapp
   annotations:
     argocd-image-updater.argoproj.io/image-list: hesh3am/myapp
+    argocd-image-updater.argoproj.io/write-back-method: git
     argocd-image-updater.argoproj.io/update-strategy: latest
-    argocd-image-updater.argoproj.io/image-update-strategy: replace  # Forces rollout on update
-    #argocd-image-updater.argoproj.io/image-list: hesh3am/myapp:latest
-    #argocd-image-updater.argoproj.io/hesh3am-myapp.update-strategy: latest
-    # argocd-image-updater.argoproj.io/hesh3am-myapp.update-strategy: semver
-    # argocd-image-updater.argoproj.io/hesh3am-myapp.allow-tags: regexp:^1\.\d+$
+
 spec:
-  replicas: 4
+  replicas: 2
   selector:
     matchLabels:
       app: myapp
@@ -21,11 +21,41 @@ spec:
         app: myapp
     spec:
       containers:
-      - name: myapp-container
-        image: hesh3am/myapp  # This will be updated automatically
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 3000
+        - name: myapp
+          image: hesh3am/myapp:1.0  # This tag will be updated automatically
+          ports:
+            - containerPort: 3000
+
+
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: myapp-deployment
+#   annotations:
+#     argocd-image-updater.argoproj.io/image-list: hesh3am/myapp
+#     argocd-image-updater.argoproj.io/update-strategy: latest
+#     argocd-image-updater.argoproj.io/image-update-strategy: replace  # Forces rollout on update
+#     #argocd-image-updater.argoproj.io/image-list: hesh3am/myapp:latest
+#     #argocd-image-updater.argoproj.io/hesh3am-myapp.update-strategy: latest
+#     # argocd-image-updater.argoproj.io/hesh3am-myapp.update-strategy: semver
+#     # argocd-image-updater.argoproj.io/hesh3am-myapp.allow-tags: regexp:^1\.\d+$
+# spec:
+#   replicas: 4
+#   selector:
+#     matchLabels:
+#       app: myapp
+#   template:
+#     metadata:
+#       labels:
+#         app: myapp
+#     spec:
+#       containers:
+#       - name: myapp-container
+#         image: hesh3am/myapp  # This will be updated automatically
+#         imagePullPolicy: Always
+#         ports:
+#         - containerPort: 3000
 
 ---
 apiVersion: v1
