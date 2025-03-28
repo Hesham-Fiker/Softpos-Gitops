@@ -5,10 +5,10 @@ metadata:
   namespace: default
   labels:
     app: myapp
-  annotations:
-    argocd-image-updater.argoproj.io/image-list: myapp=docker.io/hesh3am/myapp
-    argocd-image-updater.argoproj.io/write-back-method: git
-    argocd-image-updater.argoproj.io/update-strategy: latest
+  # annotations:
+  #   argocd-image-updater.argoproj.io/image-list: myapp=docker.io/hesh3am/myapp
+  #   argocd-image-updater.argoproj.io/write-back-method: git
+  #   argocd-image-updater.argoproj.io/update-strategy: latest
 
 spec:
   replicas: 3
@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: myapp
-          image: hesh3am/myapp:1.0  # This tag will be updated automatically
+          image: hesh3am/myapp:2.5  # This tag will be updated automatically
           ports:
             - containerPort: 3000
 
