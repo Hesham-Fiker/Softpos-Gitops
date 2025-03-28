@@ -25,7 +25,7 @@ spec:
           image: hesh3am/myapp:2.5  # This tag will be updated automatically
           env:
             - name: FORCE_REDEPLOY
-              value: "hjasdasdasdasdasdd"
+              value: "hjasdasdasdd"
           # imagePullPolicy: Always
           ports:
             - containerPort: 3000
