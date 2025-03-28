@@ -26,7 +26,7 @@ spec:
           env:
             - name: FORCE_REDEPLOY
               value: "hjasdasdasdd"
-          # imagePullPolicy: Always
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
 
