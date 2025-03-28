@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: myapp
-          image: hesh3am/myapp:2.5  # This tag will be updated automatically
+          image: hesh3am/myapp:1.0  # This tag will be updated automatically
           env:
             - name: FORCE_REDEPLOY
               value: "hjasdaasdasdd"
