@@ -23,6 +23,7 @@ spec:
       containers:
         - name: myapp
           image: hesh3am/myapp:2.5  # This tag will be updated automatically
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
 
