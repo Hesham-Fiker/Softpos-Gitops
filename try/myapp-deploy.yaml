@@ -6,7 +6,7 @@ metadata:
   labels:
     app: myapp
   annotations:
-    argocd-image-updater.argoproj.io/image-list: docker.io/hesh3am/myapp
+    argocd-image-updater.argoproj.io/image-list: myapp=docker.io/hesh3am/myapp
     argocd-image-updater.argoproj.io/write-back-method: git
     argocd-image-updater.argoproj.io/update-strategy: latest
 
